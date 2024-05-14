@@ -347,3 +347,18 @@ func isPrimeCandidate(number *big.Int) bool {
 	}
 	return true
 }
+
+var (
+	ErrInvalidSafePrime = fmt.Errorf("invalid safe prime")
+)
+
+func BuildSafePrime(p, q *big.Int) ([]*GermainSafePrime, error) {
+	primes := []*GermainSafePrime{
+		{q: q, p: getSafePrime(q)},
+		{q: p, p: getSafePrime(p)},
+	}
+	if !primes[0].Validate() || !primes[1].Validate() {
+		return nil, ErrInvalidSafePrime
+	}
+	return primes, nil
+}
