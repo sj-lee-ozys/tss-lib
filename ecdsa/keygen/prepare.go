@@ -154,3 +154,42 @@ consumer:
 	}
 	return preParams, nil
 }
+
+func GeneratePreParamsWithContextAndGeneratedKeys(ctx context.Context, paiSK *paillier.PrivateKey, sgps []*common.GermainSafePrime) (*LocalPreParams, error) {
+	if sgps == nil ||
+		sgps[0] == nil || sgps[1] == nil ||
+		!sgps[0].Prime().ProbablyPrime(30) || !sgps[1].Prime().ProbablyPrime(30) ||
+		!sgps[0].SafePrime().ProbablyPrime(30) || !sgps[1].SafePrime().ProbablyPrime(30) {
+		return nil, errors.New("invalid safe primes")
+	}
+
+	if paiSK == nil {
+		return nil, errors.New("invalid Paillier secret key")
+	}
+
+	rand := rand.Reader
+
+	P, Q := sgps[0].SafePrime(), sgps[1].SafePrime()
+	NTildei := new(big.Int).Mul(P, Q)
+	modNTildeI := common.ModInt(NTildei)
+
+	p, q := sgps[0].Prime(), sgps[1].Prime()
+	modPQ := common.ModInt(new(big.Int).Mul(p, q))
+	f1 := common.GetRandomPositiveRelativelyPrimeInt(rand, NTildei)
+	alpha := common.GetRandomPositiveRelativelyPrimeInt(rand, NTildei)
+	beta := modPQ.ModInverse(alpha)
+	h1i := modNTildeI.Mul(f1, f1)
+	h2i := modNTildeI.Exp(h1i, alpha)
+
+	preParams := &LocalPreParams{
+		PaillierSK: paiSK,
+		NTildei:    NTildei,
+		H1i:        h1i,
+		H2i:        h2i,
+		Alpha:      alpha,
+		Beta:       beta,
+		P:          p,
+		Q:          q,
+	}
+	return preParams, nil
+}
