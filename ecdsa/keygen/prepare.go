@@ -75,7 +75,7 @@ func GeneratePreParamsWithContextAndRandom(ctx context.Context, rand io.Reader, 
 		common.Logger.Info("generating the Paillier modulus, please wait...")
 		start := time.Now()
 		// more concurrency weight is assigned here because the paillier primes have a requirement of having "large" P-Q
-		PiPaillierSk, _, err := paillier.GenerateKeyPair(ctx, rand, paillierModulusLen, concurrency*2)
+		PiPaillierSk, _, err := paillier.GenerateKeyPair(ctx, rand, paillierModulusLen, concurrency)
 		if err != nil {
 			ch <- nil
 			return
