@@ -11,6 +11,8 @@ import (
 	_ "crypto/sha512"
 	"encoding/binary"
 	"math/big"
+
+	"github.com/bnb-chain/tss-lib/v2/common"
 )
 
 const (
@@ -95,6 +97,8 @@ func SHA512_256i(in ...*big.Int) *big.Int {
 
 // SHA512_256i_TAGGED tagged version of SHA512_256i
 func SHA512_256i_TAGGED(tag []byte, in ...*big.Int) *big.Int {
+	common.Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
+	defer common.Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
 	tagBz := SHA512_256(tag)
 	var data []byte
 	state := crypto.SHA512_256.New()

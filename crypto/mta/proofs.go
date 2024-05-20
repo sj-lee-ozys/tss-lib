@@ -98,18 +98,22 @@ func ProveBobWC(Session []byte, ec elliptic.Curve, pk *paillier.PublicKey, NTild
 	w := modNTilde.Exp(h1, gamma)
 	w = modNTilde.Mul(w, modNTilde.Exp(h2, tau))
 
+	common.Logger.Debug("ProveBobWC: RejectionSample starting")
 	// 11-12. e'
 	var e *big.Int
 	{ // must use RejectionSample
 		var eHash *big.Int
 		// X is nil if called by ProveBob (Bob's proof "without check")
+		common.Logger.Debug("ProveBobWC: RejectionSample hashing")
 		if X == nil {
 			eHash = common.SHA512_256i_TAGGED(Session, append(pk.AsInts(), c1, c2, z, zPrm, t, v, w)...)
 		} else {
 			eHash = common.SHA512_256i_TAGGED(Session, append(pk.AsInts(), X.X(), X.Y(), c1, c2, u.X(), u.Y(), z, zPrm, t, v, w)...)
 		}
+		common.Logger.Debug("ProveBobWC: RejectionSample sampling")
 		e = common.RejectionSample(q, eHash)
 	}
+	common.Logger.Debug("ProveBobWC: RejectionSample done")
 
 	// 13.
 	modN := common.ModInt(pk.N)
