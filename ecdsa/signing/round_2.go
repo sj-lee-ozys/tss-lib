@@ -13,6 +13,7 @@ import (
 
 	errorspkg "github.com/pkg/errors"
 
+	"github.com/bnb-chain/tss-lib/v2/common"
 	"github.com/bnb-chain/tss-lib/v2/crypto/mta"
 	"github.com/bnb-chain/tss-lib/v2/tss"
 )
@@ -125,6 +126,7 @@ func (round *round2) Start() *tss.Error {
 
 func (round *round2) Update() (bool, *tss.Error) {
 	ret := true
+	common.Logger.Info("round.temp.signRound2Messages: %v", len(round.temp.signRound2Messages))
 	for j, msg := range round.temp.signRound2Messages {
 		if round.ok[j] {
 			continue

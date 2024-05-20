@@ -164,6 +164,7 @@ func BaseUpdate(p Party, msg ParsedMessage, task string) (ok bool, err *Error) {
 	}
 	if p.round() != nil {
 		common.Logger.Debugf("party %s: %s round %d update", p.round().Params().PartyID(), task, p.round().RoundNumber())
+		defer common.Logger.Debugf("party %s: %s round %d update done", p.round().Params().PartyID(), task, p.round().RoundNumber())
 		if _, err := p.round().Update(); err != nil {
 			return r(false, err)
 		}
