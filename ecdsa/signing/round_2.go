@@ -41,11 +41,14 @@ func (round *round2) Start() *tss.Error {
 		go func(j int, Pj *tss.PartyID) {
 			defer wg.Done()
 			r1msg := round.temp.signRound1Message1s[j].Content().(*SignRound1Message1)
+			common.Logger.Debug("UnmarshalRangeProofAlice starting")
 			rangeProofAliceJ, err := r1msg.UnmarshalRangeProofAlice()
+			common.Logger.Debug("UnmarshalRangeProofAlice done")
 			if err != nil {
 				errChs <- round.WrapError(errorspkg.Wrapf(err, "UnmarshalRangeProofAlice failed"), Pj)
 				return
 			}
+			common.Logger.Debug("BobMid starting")
 			beta, c1ji, _, pi1ji, err := mta.BobMid(
 				ContextI,
 				round.Parameters.EC(),
@@ -61,6 +64,8 @@ func (round *round2) Start() *tss.Error {
 				round.key.H2j[i],
 				round.Rand(),
 			)
+			common.Logger.Debug("BobMid done")
+
 			// should be thread safe as these are pre-allocated
 			round.temp.betas[j] = beta
 			round.temp.c1jis[j] = c1ji
@@ -73,11 +78,14 @@ func (round *round2) Start() *tss.Error {
 		go func(j int, Pj *tss.PartyID) {
 			defer wg.Done()
 			r1msg := round.temp.signRound1Message1s[j].Content().(*SignRound1Message1)
+			common.Logger.Debug("UnmarshalRangeProofAlice starting")
 			rangeProofAliceJ, err := r1msg.UnmarshalRangeProofAlice()
+			common.Logger.Debug("UnmarshalRangeProofAlice done")
 			if err != nil {
 				errChs <- round.WrapError(errorspkg.Wrapf(err, "UnmarshalRangeProofAlice failed"), Pj)
 				return
 			}
+			common.Logger.Debug("BobMidWC starting")
 			v, c2ji, _, pi2ji, err := mta.BobMidWC(
 				ContextI,
 				round.Parameters.EC(),
@@ -94,6 +102,7 @@ func (round *round2) Start() *tss.Error {
 				round.temp.bigWs[i],
 				round.Rand(),
 			)
+			common.Logger.Debug("BobMidWC done")
 			round.temp.vs[j] = v
 			round.temp.c2jis[j] = c2ji
 			round.temp.pi2jis[j] = pi2ji
@@ -102,8 +111,10 @@ func (round *round2) Start() *tss.Error {
 			}
 		}(j, Pj)
 	}
+	common.Logger.Debug("wg.Wait starting")
 	// consume error channels; wait for goroutines
 	wg.Wait()
+	common.Logger.Debug("wg.Wait done")
 	close(errChs)
 	culprits := make([]*tss.PartyID, 0, len(round.Parties().IDs()))
 	for err := range errChs {
