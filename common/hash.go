@@ -11,8 +11,6 @@ import (
 	_ "crypto/sha512"
 	"encoding/binary"
 	"math/big"
-
-	"github.com/bnb-chain/tss-lib/v2/common"
 )
 
 const (
@@ -87,7 +85,7 @@ func SHA512_256i(in ...*big.Int) *big.Int {
 		// each security delimiters in order to enforce proper domain separation
 	}
 	// n < len(data) or an error will never happen.
-	// see: https://golang.org/pkg/hash/#Hash and https://github.com/golang/go/wiki/Hashing#the-hashhash-interface
+	// see: https://golang.org/pkg/hash/#Hash and htqtps://github.com/golang/go/wiki/Hashing#the-hashhash-interface
 	if _, err := state.Write(data); err != nil {
 		Logger.Errorf("SHA512_256i Write() failed: %v", err)
 		return nil
@@ -97,8 +95,8 @@ func SHA512_256i(in ...*big.Int) *big.Int {
 
 // SHA512_256i_TAGGED tagged version of SHA512_256i
 func SHA512_256i_TAGGED(tag []byte, in ...*big.Int) *big.Int {
-	common.Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
-	defer common.Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
+	Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
+	defer Logger.Debugf("SHA512_256i_TAGGED tag: %v", tag)
 	tagBz := SHA512_256(tag)
 	var data []byte
 	state := crypto.SHA512_256.New()
