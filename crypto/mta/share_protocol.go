@@ -52,16 +52,23 @@ func BobMid(
 	if err != nil {
 		return
 	}
+	common.Logger.Debug("BobMid: HomoMult starting")
 	cB, err = pkA.HomoMult(b, cA)
+	common.Logger.Debug("BobMid: HomoMult done")
 	if err != nil {
 		return
 	}
+	common.Logger.Debug("BobMid: HomoAdd starting")
 	cB, err = pkA.HomoAdd(cB, cBetaPrm)
+	common.Logger.Debug("BobMid: HomoAdd done")
 	if err != nil {
 		return
 	}
 	beta = common.ModInt(q).Sub(zero, betaPrm)
+
+	common.Logger.Debug("BobMid: ProveBob starting")
 	piB, err = ProveBob(Session, ec, pkA, NTildeA, h1A, h2A, cA, cB, b, betaPrm, cRand, rand)
+	common.Logger.Debug("BobMid: ProveBob done")
 	return
 }
 
