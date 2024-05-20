@@ -170,6 +170,7 @@ func BaseUpdate(p Party, msg ParsedMessage, task string) (ok bool, err *Error) {
 		}
 		if p.round().CanProceed() {
 			if p.advance(); p.round() != nil {
+				common.Logger.Infof("party %s: %s round starting", p.round().Params().PartyID(), task)
 				if err := p.round().Start(); err != nil {
 					return r(false, err)
 				}

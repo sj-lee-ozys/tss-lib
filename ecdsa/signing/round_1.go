@@ -85,7 +85,7 @@ func (round *round1) Start() *tss.Error {
 }
 
 func (round *round1) Update() (bool, *tss.Error) {
-	common.Logger.Info("round.temp.signRound1Message1s: %v", len(round.temp.signRound1Message1s))
+	common.Logger.Infof("round.temp.signRound1Message1s: %v", len(round.temp.signRound1Message1s))
 	for j, msg1 := range round.temp.signRound1Message1s {
 		if round.ok[j] {
 			continue
