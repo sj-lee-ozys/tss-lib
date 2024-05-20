@@ -74,6 +74,7 @@ func GetRandomPositiveRelativelyPrimeInt(rand io.Reader, n *big.Int) *big.Int {
 	if n == nil || zero.Cmp(n) != -1 {
 		return nil
 	}
+	Logger.Debug("GetRandomPositiveRelativelyPrimeInt: n", n)
 	var try *big.Int
 	for {
 		try = MustGetRandomInt(rand, n.BitLen())
@@ -81,6 +82,7 @@ func GetRandomPositiveRelativelyPrimeInt(rand io.Reader, n *big.Int) *big.Int {
 			break
 		}
 	}
+	Logger.Debug("GetRandomPositiveRelativelyPrimeInt: try", try)
 	return try
 }
 
